@@ -143,7 +143,7 @@ EXPORT void CALL CloseDLL (void)
 
 EXPORT void CALL DllAbout ( HWND hParent )
 {
-	MessageBox( hParent, "glN64 v0.4 by Orkin\n\nWebsite: http://gln64.emulation64.com/\n\nThanks to Clements, Rice, Gonetz, Malcolm, Dave2001, cryhlove, icepir8, zilmar, Azimer, and StrmnNrmn", pluginName, MB_OK | MB_ICONINFORMATION );
+	MessageBox( hParent, "glN64 v0.4 by Orkin\n\nWebsite: http://gln64.emulation64.com/\n\nThanks to Clements, Rice, Gonetz, Malcolm, Dave2001, cryhlove, icepir8, zilmar, Azimer, and StrmnNrmn\navi fork by madghostek", pluginName, MB_OK | MB_ICONINFORMATION );
 }
 
 EXPORT void CALL DllConfig ( HWND hParent )

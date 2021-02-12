@@ -11,8 +11,12 @@
 #include "convert.h"
 #include "2xSAI.h"
 #include "FrameBuffer.h"
+#include "xBRZ.h"
 
 TextureCache	cache;
+xbrz::ScalerCfg scalerCfg = {1,30,3.6,2.2,0};
+
+
 
 typedef u32 (*GetTexelFunc)( u64 *src, u16 x, u16 i, u8 palette );
 
@@ -227,6 +231,7 @@ void TextureCache_Init()
 	cache.numCached = 0;
 	cache.cachedBytes = 0;
 	cache.enable2xSaI = OGL.enable2xSaI;
+	
 	cache.bitDepth = OGL.textureBitDepth;
 
 	glGenTextures( 32, cache.glNoiseNames );
@@ -516,24 +521,43 @@ void TextureCache_LoadBackground( CachedTexture *texInfo )
 		}
 	}
 
-	if (cache.enable2xSaI)
+	if (/*cache.enable2xSaI*/true)
 	{
 		texInfo->textureBytes <<= 2;
 
 		scaledDest = (u32*)malloc( texInfo->textureBytes );
 
-		if (glInternalFormat == GL_RGBA8)
+		
+		/*if (glInternalFormat == GL_RGBA8)
 			_2xSaI8888( (u32*)dest, (u32*)scaledDest, texInfo->realWidth, texInfo->realHeight, texInfo->clampS, texInfo->clampT );
 		else if (glInternalFormat == GL_RGBA4)
 			_2xSaI4444( (u16*)dest, (u16*)scaledDest, texInfo->realWidth, texInfo->realHeight, texInfo->clampS, texInfo->clampT );
 		else
 			_2xSaI5551( (u16*)dest, (u16*)scaledDest, texInfo->realWidth, texInfo->realHeight, texInfo->clampS, texInfo->clampT );
+			*/
+		
+		// hardcoded 4x
+		xbrz::scale(
+			(size_t)2,
+			(uint32_t*)dest,
+			(uint32_t*)scaledDest,
+			texInfo->realWidth,
+			texInfo->realHeight,
+			xbrz::ColorFormat::RGB, // NEEDS IF CHECK, this might crash!!
+			scalerCfg,
+			0,
+			texInfo->realHeight // realheight??? i think no need to upscale outside of n64  screen bounds
+		);
 
 		glTexImage2D( GL_TEXTURE_2D, 0, glInternalFormat, texInfo->realWidth << 1, texInfo->realHeight << 1, 0, GL_RGBA, glType, scaledDest );
+
+
+
 
 		free( dest );
 		free( scaledDest );
 	}
+	//else if(cache.enablexbrz)
 	else
 	{
 		glTexImage2D( GL_TEXTURE_2D, 0, glInternalFormat, texInfo->realWidth, texInfo->realHeight, 0, GL_RGBA, glType, dest );

@@ -14,17 +14,18 @@
 // * do so, delete this exception statement from your version.                *
 // ****************************************************************************
 
-#include "xBRZ.h"
+#include "xbrz.h"
 #include <cassert>
 #include <vector>
 #include <algorithm>
 #include <cmath> //std::sqrt
 #include "xBRZTools.h"
 
+using namespace xbrz;
 
 
-
-
+namespace
+{
     template <unsigned int M, unsigned int N> inline
         uint32_t gradientRGB(uint32_t pixFront, uint32_t pixBack) //blend front color with opacity M / N over opaque background: http://en.wikipedia.org/wiki/Alpha_compositing#Alpha_blending
     {
@@ -268,7 +269,7 @@
     */
     template <class ColorDistance>
     FORCE_INLINE //detect blend direction
-        BlendResult preProcessCorners(const Kernel_4x4& ker, const ScalerCfg& cfg) //result: F, G, J, K corners of "GradientType"
+        BlendResult preProcessCorners(const Kernel_4x4& ker, const xbrz::ScalerCfg& cfg) //result: F, G, J, K corners of "GradientType"
     {
         BlendResult result = {};
 
@@ -359,7 +360,11 @@
     template <> inline unsigned char rotateBlendInfo<ROT_270>(unsigned char b) { return ((b << 6) | (b >> 2)) & 0xff; }
 
 
-
+#ifndef NDEBUG
+    int debugPixelX = -1;
+    int debugPixelY = 12;
+    /*__declspec(thread)*/ bool breakIntoDebugger = false;
+#endif
 
 
     /*
@@ -377,7 +382,7 @@
         void blendPixel(const Kernel_3x3& ker,
             uint32_t* target, int trgWidth,
             unsigned char blendInfo, //result of preprocessing all four corners of pixel "e"
-            const ScalerCfg& cfg)
+            const xbrz::ScalerCfg& cfg)
     {
 #define a get_a<rotDeg>(ker)
 #define b get_b<rotDeg>(ker)
@@ -462,7 +467,7 @@
 
 
     template <class Scaler, class ColorDistance> //scaler policy: see "Scaler2x" reference implementation
-    void scaleImage(const uint32_t* src, uint32_t* trg, int srcWidth, int srcHeight, const ScalerCfg& cfg, int yFirst, int yLast)
+    void scaleImage(const uint32_t* src, uint32_t* trg, int srcWidth, int srcHeight, const xbrz::ScalerCfg& cfg, int yFirst, int yLast)
     {
         yFirst = std::max(yFirst, 0);
         yLast = std::min(yLast, srcHeight);
@@ -546,7 +551,9 @@
 
             for (int x = 0; x < srcWidth; ++x, out += Scaler::scale)
             {
-
+#ifndef NDEBUG
+                breakIntoDebugger = debugPixelX == x && debugPixelY == y;
+#endif
                 //all those bounds checks have only insignificant impact on performance!
                 const int x_m1 = std::max(x - 1, 0); //perf: prefer array indexing to additional pointers!
                 const int x_p1 = std::min(x + 1, srcWidth - 1);
@@ -1064,10 +1071,10 @@
             pixBack = gradientARGB<M, N>(pixFront, pixBack);
         }
     };
+}
 
 
-
-void scale(size_t factor, const uint32_t* src, uint32_t* trg, int srcWidth, int srcHeight, ColorFormat colFmt, const ScalerCfg& cfg, int yFirst, int yLast)
+void xbrz::scale(size_t factor, const uint32_t* src, uint32_t* trg, int srcWidth, int srcHeight, ColorFormat colFmt, const xbrz::ScalerCfg& cfg, int yFirst, int yLast)
 {
     static_assert(SCALE_FACTOR_MAX == 6, "");
     switch (colFmt)
@@ -1124,7 +1131,7 @@ void scale(size_t factor, const uint32_t* src, uint32_t* trg, int srcWidth, int 
 }
 
 
-bool equalColorTest(uint32_t col1, uint32_t col2, ColorFormat colFmt, double luminanceWeight, double equalColorTolerance)
+bool xbrz::equalColorTest(uint32_t col1, uint32_t col2, ColorFormat colFmt, double luminanceWeight, double equalColorTolerance)
 {
     switch (colFmt)
     {
@@ -1140,7 +1147,7 @@ bool equalColorTest(uint32_t col1, uint32_t col2, ColorFormat colFmt, double lum
 }
 
 
-void bilinearScale(const uint32_t* src, int srcWidth, int srcHeight,
+void xbrz::bilinearScale(const uint32_t* src, int srcWidth, int srcHeight,
     /**/  uint32_t* trg, int trgWidth, int trgHeight)
 {
     bilinearScale(src, srcWidth, srcHeight, srcWidth * sizeof(uint32_t),
@@ -1149,7 +1156,7 @@ void bilinearScale(const uint32_t* src, int srcWidth, int srcHeight,
 }
 
 
-void nearestNeighborScale(const uint32_t* src, int srcWidth, int srcHeight,
+void xbrz::nearestNeighborScale(const uint32_t* src, int srcWidth, int srcHeight,
     /**/  uint32_t* trg, int trgWidth, int trgHeight)
 {
     nearestNeighborScale(src, srcWidth, srcHeight, srcWidth * sizeof(uint32_t),
@@ -1171,7 +1178,7 @@ void bilinearScaleCpu(const uint32_t* src, int srcWidth, int srcHeight,
         tg.run([=]
             {
                 const int iLast = std::min(i + TASK_GRANULARITY, trgHeight);
-                bilinearScale(src, srcWidth, srcHeight, srcWidth * sizeof(uint32_t),
+                xbrz::bilinearScale(src, srcWidth, srcHeight, srcWidth * sizeof(uint32_t),
                     trg, trgWidth, trgHeight, trgWidth * sizeof(uint32_t),
                     i, iLast, [](uint32_t pix) { return pix; });
             });

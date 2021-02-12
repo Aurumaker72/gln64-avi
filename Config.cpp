@@ -74,7 +74,7 @@ void Config_LoadConfig()
 
 		RegQueryValueEx( hKey, "Enable 2xSaI", 0, NULL, (BYTE*)&value, &size );
 		OGL.enable2xSaI = value ? TRUE : FALSE;
-
+		
 		RegQueryValueEx( hKey, "Enable Fog", 0, NULL, (BYTE*)&value, &size );
 		OGL.fog = value ? TRUE : FALSE;
 
