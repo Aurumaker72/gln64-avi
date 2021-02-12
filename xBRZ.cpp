@@ -359,11 +359,7 @@
     template <> inline unsigned char rotateBlendInfo<ROT_270>(unsigned char b) { return ((b << 6) | (b >> 2)) & 0xff; }
 
 
-#ifndef NDEBUG
-    int debugPixelX = -1;
-    int debugPixelY = 12;
-    /*__declspec(thread)*/ bool breakIntoDebugger = false;
-#endif
+
 
 
     /*
@@ -550,9 +546,7 @@
 
             for (int x = 0; x < srcWidth; ++x, out += Scaler::scale)
             {
-#ifndef NDEBUG
-                breakIntoDebugger = debugPixelX == x && debugPixelY == y;
-#endif
+
                 //all those bounds checks have only insignificant impact on performance!
                 const int x_m1 = std::max(x - 1, 0); //perf: prefer array indexing to additional pointers!
                 const int x_p1 = std::min(x + 1, srcWidth - 1);

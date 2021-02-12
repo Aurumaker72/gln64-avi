@@ -1,4 +1,4 @@
-#pragma once
+//#pragma once
 // ****************************************************************************
 // * This file is part of the xBRZ project. It is distributed under           *
 // * GNU General Public License: https://www.gnu.org/licenses/gpl-3.0         *
@@ -15,8 +15,8 @@
 // * do so, delete this exception statement from your version.                *
 // ****************************************************************************
 
-#ifndef XBRZ_HEADER_3847894708239054
-#define XBRZ_HEADER_3847894708239054
+//#ifndef XBRZ_HEADER_3847894708239054
+//#define XBRZ_HEADER_3847894708239054
 
 #include <cstddef> //size_t
 #include <cstdint> //uint32_t
@@ -75,4 +75,4 @@
     bool equalColorTest(uint32_t col1, uint32_t col2, ColorFormat colFmt, double luminanceWeight, double equalColorTolerance);
 
 
-#endif
+//#endif

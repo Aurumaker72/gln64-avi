@@ -14,8 +14,8 @@
 // * do so, delete this exception statement from your version.                *
 // ****************************************************************************
 
-#ifndef XBRZ_CONFIG_HEADER_284578425345
-#define XBRZ_CONFIG_HEADER_284578425345
+//#ifndef XBRZ_CONFIG_HEADER_284578425345
+//#define XBRZ_CONFIG_HEADER_284578425345
 
 //do NOT include any headers here! used by xBRZ_dll!!!
 
@@ -30,4 +30,4 @@
     };
 
 
-#endif
+//#endif
