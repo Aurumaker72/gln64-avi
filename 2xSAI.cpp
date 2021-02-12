@@ -3,6 +3,7 @@
 
 static inline s16 GetResult1( u32 A, u32 B, u32 C, u32 D, u32 E )
 {
+
 	s16 x = 0;
 	s16 y = 0;
 	s16 r = 0;

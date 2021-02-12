@@ -120,6 +120,9 @@
     <ClCompile Include="texture_env_combine.cpp">
       <Filter>Source Files\Combiners</Filter>
     </ClCompile>
+    <ClCompile Include="xBRZ.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2xSAI.h">
@@ -238,6 +241,15 @@
     </ClInclude>
     <ClInclude Include="texture_env_combine.h">
       <Filter>Header Files\Combiners</Filter>
+    </ClInclude>
+    <ClInclude Include="xBRZ.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xBRZCfg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xBRZTools.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
